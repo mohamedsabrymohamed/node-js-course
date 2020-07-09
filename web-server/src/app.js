@@ -1,8 +1,12 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const geocode = require('./utils/geocode')
+const forecast = require('./utils/forcast')
+
 
 const app = express()
+const port = process.env.PORT || 3000
 
 // define public folder
 const publicDirectoryPath = path.join(__dirname,'../public')
@@ -32,6 +36,33 @@ app.get('',(req,res) => {
     })
 })
 
+app.get('/weather', (req, res) => {
+    if (!req.query.address) {
+        return res.send({
+            error: 'You must provide an address!'
+        })
+    }
+
+    geocode(req.query.address, (error, { latitude, longtitude, location } = {}) => {
+        if (error) {
+            return res.send({ error })
+        }
+
+        forecast(latitude, longtitude, (error, forecastData) => {
+            if (error) {
+                return res.send({ error })
+            }
+
+            res.send({
+                forecast: forecastData,
+                location,
+                address: req.query.address
+            })
+        })
+    })
+})
+
+
 //app.get used as routes
 // app.get('',(req,res) => {
 //     res.send('Hello')
@@ -46,10 +77,11 @@ app.get('',(req,res) => {
 
 app.get('*',(req,res)=>{
     res.render('404',{
-        msg: 'Error 404 Page not found'
+        title: '404',
+        errorMessage: 'Page not found.'
     })
 })
 
-app.listen(3000, ()=>{
-    console.log('server running')
+app.listen(port, () => {
+    console.log('Server is up on port ' + port)
 })
