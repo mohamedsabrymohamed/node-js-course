@@ -6,7 +6,7 @@ const app = express()
 // define public folder
 const publicDirectoryPath = path.join(__dirname,'../public')
 
-//to use a static page with default route
+//to use a static page with default route == as user put / and route name if file is exist it will display html page
 app.use(express.static(publicDirectoryPath))
 
 //app.get used as routes
@@ -14,9 +14,9 @@ app.use(express.static(publicDirectoryPath))
 //     res.send('Hello')
 // })
 
-app.get('/help',(req,res) => {
-    res.send('help page')
-})
+// app.get('/help',(req,res) => {
+//     res.send('help page')
+// })
 
 
 app.listen(3000, ()=>{
