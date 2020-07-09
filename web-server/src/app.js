@@ -2,6 +2,7 @@ const express = require('express')
 
 const app = express()
 
+//app.get used as routes
 app.get('',(req,res) => {
     res.send('Hello')
 })
