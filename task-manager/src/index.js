@@ -149,6 +149,67 @@ app.get('/tasks/:id',(req,res)=>{
 
 
 
+////////////////////////// resource Update //////////////////////////
+
+////////////////////////// Users Model //////////////////////////
+
+app.patch('/users/:id', async (req,res)=>{
+
+    //get requested columns need to be updated
+    const updates = Object.keys(req.body)
+    //define allowed columns
+    const allowedUpdates = ['name', 'email','password', 'age']
+    //check requested coulmns with allowed columns
+    const isValidOperation = updates.every((update)=>{
+        return allowedUpdates.includes(update)
+    })
+
+    if(!isValidOperation) {
+        return res.status(400).send({error:'Invalid updates'})  
+    }
+
+    try{
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true } )
+        if(!user) {
+            return res.status(404).send()
+        }
+
+        res.send(user)
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
+
+
+
+////////////////////////// Tasks Model //////////////////////////
+
+app.patch('/tasks/:id', async (req,res)=>{
+
+    //get requested columns need to be updated
+    const updates = Object.keys(req.body)
+    //define allowed columns
+    const allowedUpdates = ['description', 'completed']
+    //check requested coulmns with allowed columns
+    const isValidOperation = updates.every((update)=>{
+        return allowedUpdates.includes(update)
+    })
+
+    if(!isValidOperation) {
+        return res.status(400).send({error:'Invalid updates'})  
+    }
+
+    try{
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true } )
+        if(!task) {
+            return res.status(404).send()
+        }
+
+        res.send(task)
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
 
 ////////////////////////// test promise chaining to find user by id and return users who have defined age //////////////////////////
 
