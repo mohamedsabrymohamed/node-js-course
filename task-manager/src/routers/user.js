@@ -133,7 +133,7 @@ router.delete('/users/:id', async(req,res)=>{
 
 
 
-//signin
+//////////////////////////signin//////////////////////////
 
 router.post('/users/login', async (req,res)=> {
     try{
@@ -144,5 +144,41 @@ router.post('/users/login', async (req,res)=> {
         res.status(400).send()
     }
 })
+
+
+//////////////////////////logout specified session//////////////////////////
+
+router.post('users/logout',auth,async (req,res)=>{
+    try{
+        //check if token used is in tokens array in users table and delete it
+        req.user.tokens = req.user.tokens.filter((token)=>{
+            return token.token != req.token
+        })
+        //save user tokens 
+        await req.user.save()
+        res.send()
+
+    }catch(e){
+        res.status(500).send()
+    }
+})
+
+
+//////////////////////////logout all sessions//////////////////////////
+
+router.post('users/logoutAll',auth,async (req,res)=>{
+    try{
+       
+        req.user.tokens = []
+        //save user tokens 
+        await req.user.save()
+        res.send()
+
+    }catch(e){
+        res.status(500).send()
+    }
+})
+
+
 
 module.exports = router
