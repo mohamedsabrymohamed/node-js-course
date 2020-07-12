@@ -211,6 +211,45 @@ app.patch('/tasks/:id', async (req,res)=>{
     }
 })
 
+
+
+
+////////////////////////// resource delete //////////////////////////
+
+////////////////////////// Users Model //////////////////////////
+
+app.delete('/users/:id', async(req,res)=>{
+    try{
+        const user = await User.findByIdAndDelete(req.params.id)
+        if(!user){
+            return res.status(400).send()
+        }
+
+        res.send(user)
+    }catch(e){
+        res.status(400).send()
+    }
+})
+
+
+
+////////////////////////// Tasks Model //////////////////////////
+
+app.delete('/tasks/:id', async(req,res)=>{
+    try{
+        const task = await Task.findByIdAndDelete(req.params.id)
+        if(!task){
+            return res.status(400).send()
+        }
+
+        res.send(task)
+    }catch(e){
+        res.status(400).send()
+    }
+})
+
+
+
 ////////////////////////// test promise chaining to find user by id and return users who have defined age //////////////////////////
 
 // User.findByIdAndUpdate('5465464546546',{age: 1}).then((user)=>{
