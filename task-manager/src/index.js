@@ -8,6 +8,11 @@ const taskRouter = require('./routers/task')
 
 const app = express()
 const port = process.env.PORT || 3000
+
+//////////////////////////////////create middleware for maintainance mode////////////////////////////////
+// app.user((req,res,next)=> {
+//     res.status(503).send('Site is currently down. Check back soon!')
+// })
 //to make express accept json 
 app.use(express.json)
 //register routers

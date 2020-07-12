@@ -1,10 +1,11 @@
 const express = require('express')
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 ////////////////////////// create routers //////////////////////////
 const router = express.Router()
 
 
-////////////////////////// resource creation //////////////////////////
+////////////////////////// resource creation  (signup)//////////////////////////
 
 router.post('/users', async (req, res) => {
     const user = User(req.body)
@@ -31,7 +32,7 @@ router.post('/users', async (req, res) => {
 
 ////////////////////////// resource Reading //////////////////////////
 ////////////////////////// fetch all //////////////////////////
-router.get('/users',async (req,res)=>{
+router.get('/users', auth, async (req,res)=>{
     
     try{
         const users = await User.find({})
@@ -49,6 +50,10 @@ router.get('/users',async (req,res)=>{
 })
 
 
+////////////////////////// get user profile //////////////////////////
+router.get('/users/me', auth, async (req,res)=>{
+    res.send(req.user)
+})
 
 ////////////////////////// fetch by id //////////////////////////
 
