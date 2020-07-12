@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator')
 
 /////////////////////////////////tasks model/////////////////////////////////
-
-const Task = mongoose.model('Task', {
+const taskSchema = mongoose.Schema({
     description: {
         type: String,
         required: true,
@@ -20,7 +19,14 @@ const Task = mongoose.model('Task', {
         //refrence user model
         ref:'User'
     }
-});
+},
+//create timestamps
+{
+    timestamps: true
+})
+
+
+const Task = mongoose.model('Task', taskSchema);
 
 // const task = Task({
 //     description: 'learn',

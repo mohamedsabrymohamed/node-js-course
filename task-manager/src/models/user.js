@@ -54,7 +54,12 @@ const userSchema = mongoose.Schema({
             required: true
         }
     }]
-})
+},
+//create timestamps
+{
+    timestamps: true
+}
+)
 
 
 
