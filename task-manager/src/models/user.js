@@ -15,6 +15,7 @@ const userSchema = mongoose.Schema({
     },
     email: {
         type: String,
+        unique:true,
         required: true,
         trim: true,
         lowercase: true,
@@ -45,6 +46,23 @@ const userSchema = mongoose.Schema({
         }
     }
 })
+
+
+
+//create login function using schema
+userSchema.statics.findByCredentials = async (email,password) => {
+    const user = await User.findOne({email: email})
+    if(!user) {
+        throw Error('Unable to login. User not found')
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password)
+    if(!isMatch) {
+        throw Error('Username or password is incorrect')
+    }
+
+    return user
+}
 
 //user mongoose middleware to hash password before save
 userSchema.pre('save', async function(next){
