@@ -93,6 +93,18 @@ app.get('/tasks/:id',(req,res)=>{
 
 
 
+
+////////////////////////// test promise chaining to find user by id and return users who have defined age //////////////////////////
+
+// User.findByIdAndUpdate('5465464546546',{age: 1}).then((user)=>{
+//     console.log(user)
+//     return User.countDocuments({age: 32})
+// }).then((result)=> {
+//     console.log(result)
+// }).catch((e)=> {
+//     console.log(e)
+// })
+
 ////////////////////////// Express Listen Port //////////////////////////
 app.listen(port, () => {
     console.log('serve is up on  port ' + port)
