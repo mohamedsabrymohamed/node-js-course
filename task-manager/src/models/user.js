@@ -69,6 +69,16 @@ userSchema.methods.generateAuthToken = async function() {
     return token
 }
 
+//user getPublicProfile to return only un-sensitive data without changing user model using toJSON function name
+
+userSchema.methods.toJSON = function (){
+    const user = this
+    const userObject = user.toObject()
+    delete userObject.password
+    delete userObject.tokens 
+    return userObject
+}
+
 //create login function using schema ( statics accepted on model call)
 userSchema.statics.findByCredentials = async (email,password) => {
     const user = await User.findOne({email: email})
