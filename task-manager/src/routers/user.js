@@ -57,18 +57,18 @@ router.get('/users/me', auth, async (req,res)=>{
 
 ////////////////////////// fetch by id //////////////////////////
 
-router.get('/users/:id',async (req,res)=>{
-    const _id = req.params.id
+// router.get('/users/:id',async (req,res)=>{
+//     const _id = req.params.id
 
-    try{
-        const user = await User.findById(_id)
-             if(!user) {
-                    return res.status(400).send()
-                }
-        res.status(201).send(user)
-    }catch(e){
-        res.status(500).send(error)
-    }
+//     try{
+//         const user = await User.findById(_id)
+//              if(!user) {
+//                     return res.status(400).send()
+//                 }
+//         res.status(201).send(user)
+//     }catch(e){
+//         res.status(500).send(error)
+//     }
 
     // User.findById(_id).then((user)=>{
     //     if(!user) {
@@ -78,11 +78,11 @@ router.get('/users/:id',async (req,res)=>{
     // }).catch((e)=>{
     //     res.status(500).send()
     // })
-})
+//})
 
 ////////////////////////// resource Update //////////////////////////
 
-router.patch('/users/:id', async (req,res)=>{
+router.patch('/users/me',auth, async (req,res)=>{
 
     //get requested columns need to be updated
     const updates = Object.keys(req.body)
@@ -99,17 +99,17 @@ router.patch('/users/:id', async (req,res)=>{
 
     try{
         //to make password hashing before save work
-        const user = await User.findById(req.params.id)
+        //const user = await User.findById(req.params.id)
         updates.forEach((update)=>{
-            user[update] = req.body[update]
+            req.user[update] = req.body[update]
         })
-        await user.save()
+        await req.user.save()
         //const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true } )
-        if(!user) {
-            return res.status(404).send()
-        }
+        // if(!user) {
+        //     return res.status(404).send()
+        // }
 
-        res.send(user)
+        res.send(req.user)
     }catch(e){
         res.status(400).send(e)
     }
@@ -118,14 +118,16 @@ router.patch('/users/:id', async (req,res)=>{
 
 ////////////////////////// resource delete //////////////////////////
 
-router.delete('/users/:id', async(req,res)=>{
+router.delete('/users/me',auth, async(req,res)=>{
     try{
-        const user = await User.findByIdAndDelete(req.params.id)
-        if(!user){
-            return res.status(400).send()
-        }
+        // const user = await User.findByIdAndDelete(req.user._id)
+        // if(!user){
+        //     return res.status(400).send()
+        // }
 
-        res.send(user)
+        //remove current user
+        await req.user.remove()
+        res.send(req.user)
     }catch(e){
         res.status(400).send()
     }
