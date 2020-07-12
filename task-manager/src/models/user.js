@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 /////////////////////////////////validator/////////////////////////////////
 const validator = require('validator')
-
+/////////////////////////////////bcryptjs/////////////////////////////////
+const bcrypt = require('bcryptjs')
 /////////////////////////////////user model/////////////////////////////////
-const User = mongoose.model('User', {
+
+//create user schema
+
+const userSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -40,7 +44,22 @@ const User = mongoose.model('User', {
             }
         }
     }
-});
+})
+
+//user mongoose middleware to hash password before save
+userSchema.pre('save', async function(next){
+    const user = this
+
+    //check if user updating password
+    if(user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+
+    //to exit the function after finish
+    next()
+})
+
+const User = mongoose.model('User', userSchema);
 
 // const store = User({
 //     name: 'Sabry',
