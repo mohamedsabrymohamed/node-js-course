@@ -12,29 +12,44 @@ app.use(express.json)
 
 
 ////////////////////////// Users Model //////////////////////////
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     const user = User(req.body)
-    user.save().then(()=>{
-        //201 success for create
+    try{
+        await user.save()
         res.status(201).send(user)
-    }).catch((error)=>{
-        //set status to 400 as it will give 200 as default by express
+    }catch(e){
         res.status(400).send(error)
-    })
+    }
+
+    
+
+    // user.save().then(()=>{
+    //     //201 success for create
+    //     res.status(201).send(user)
+    // }).catch((error)=>{
+    //     //set status to 400 as it will give 200 as default by express
+    //     res.status(400).send(error)
+    // })
 })
 
 
 
 ////////////////////////// Tasks Model //////////////////////////
-app.post('/tasks', (req, res) => {
+app.post('/tasks', async(req, res) => {
     const task = Task(req.body)
-    task.save().then(()=>{
-        //201 success for create
+    try{
+        await task.save()
         res.status(201).send(task)
-    }).catch((error)=>{
-        //set status to 400 as it will give 200 as default by express
+    }catch(e){
         res.status(400).send(error)
-    })
+    }
+    // task.save().then(()=>{
+    //     //201 success for create
+    //     res.status(201).send(task)
+    // }).catch((error)=>{
+    //     //set status to 400 as it will give 200 as default by express
+    //     res.status(400).send(error)
+    // })
 })
 
 
@@ -43,26 +58,46 @@ app.post('/tasks', (req, res) => {
 ////////////////////////// Users Model //////////////////////////
 ////////////////////////// fetch all //////////////////////////
 
-app.get('/users',(req,res)=>{
-    User.find({}).then((users)=>{
-        res.send(users)
-    }).catch((e)=>{
-        res.status(500).send()
-    })
+app.get('/users',async (req,res)=>{
+    
+    try{
+        const users = await User.find({})
+        res.status(201).send(users)
+    }catch(e){
+        res.status(500).send(error)
+    }
+
+
+    // User.find({}).then((users)=>{
+    //     res.send(users)
+    // }).catch((e)=>{
+    //     res.status(500).send()
+    // })
 })
 
 ////////////////////////// fetch by id //////////////////////////
 
-app.get('/users/:id',(req,res)=>{
+app.get('/users/:id',async (req,res)=>{
     const _id = req.params.id
-    User.findById(_id).then((user)=>{
-        if(!user) {
-            return res.status(400).send()
-        }
-        res.send(user)
-    }).catch((e)=>{
-        res.status(500).send()
-    })
+
+    try{
+        const user = await User.findById(_id)
+             if(!user) {
+                    return res.status(400).send()
+                }
+        res.status(201).send(user)
+    }catch(e){
+        res.status(500).send(error)
+    }
+
+    // User.findById(_id).then((user)=>{
+    //     if(!user) {
+    //         return res.status(400).send()
+    //     }
+    //     res.send(user)
+    // }).catch((e)=>{
+    //     res.status(500).send()
+    // })
 })
 
 
@@ -70,25 +105,46 @@ app.get('/users/:id',(req,res)=>{
 ////////////////////////// fetch all //////////////////////////
 
 app.get('/tasks',(req,res)=>{
-    User.find({}).then((tasks)=>{
-        res.send(tasks)
-    }).catch((e)=>{
-        res.status(500).send()
-    })
+
+    try{
+        const tasks = await Task.find({})
+        res.status(201).send(tasks)
+    }catch(e){
+        res.status(500).send(error)
+    }
+
+
+    // Task.find({}).then((tasks)=>{
+    //     res.send(tasks)
+    // }).catch((e)=>{
+    //     res.status(500).send()
+    // })
 })
 
 ////////////////////////// fetch by id //////////////////////////
 
 app.get('/tasks/:id',(req,res)=>{
     const _id = req.params.id
-    User.findById(_id).then((task)=>{
-        if(!task) {
-            return res.status(400).send()
-        }
-        res.send(task)
-    }).catch((e)=>{
-        res.status(500).send()
-    })
+
+    try{
+        const task = await Task.findById(_id)
+             if(!task) {
+                    return res.status(400).send()
+                }
+        res.status(201).send(task)
+    }catch(e){
+        res.status(500).send(error)
+    }
+
+
+    // Task.findById(_id).then((task)=>{
+    //     if(!task) {
+    //         return res.status(400).send()
+    //     }
+    //     res.send(task)
+    // }).catch((e)=>{
+    //     res.status(500).send()
+    // })
 })
 
 
