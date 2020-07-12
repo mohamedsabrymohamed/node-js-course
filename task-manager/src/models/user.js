@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 /////////////////////////////////user model/////////////////////////////////
 
+const Task = require('./task')
 //create user schema
 
 const userSchema = mongoose.Schema({
@@ -57,6 +58,13 @@ const userSchema = mongoose.Schema({
 
 
 
+//virtual property not stored in database but refrence link between two table ( like foreign keys in database)
+userSchema.virtual('tasks',{
+    ref: 'Task',
+    localField:'_id',
+    foreignField:'owner'
+})
+
 //create generate user jwt token ( methods accepted on instance call)
 userSchema.methods.generateAuthToken = async function() {
     const user = this
@@ -106,6 +114,16 @@ userSchema.pre('save', async function(next){
     //to exit the function after finish
     next()
 })
+
+
+//delete user tasks when user is removed
+userSchema.pre('remove', async function(next){
+    const user = this
+    await Task.deleteMany({ owner: user._id })
+    next()
+})
+
+
 
 const User = mongoose.model('User', userSchema);
 

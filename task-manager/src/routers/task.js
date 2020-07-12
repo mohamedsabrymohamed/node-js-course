@@ -1,12 +1,19 @@
 const express = require('express')
 const Task = require('../models/task')
+const auth = require('../middleware/auth')
 ////////////////////////// create routers //////////////////////////
 const router = express.Router()
 
 
 ////////////////////////// resource creation //////////////////////////
-router.post('/tasks', async(req, res) => {
-    const task = Task(req.body)
+router.post('/tasks',auth, async(req, res) => {
+    //const task = Task(req.body)
+    const task = Task({
+        //copy all request body to current object (Task)
+        ...req.body,
+        //add owner
+        owner: req.user._id
+    })
     try{
         await task.save()
         res.status(201).send(task)
@@ -25,11 +32,12 @@ router.post('/tasks', async(req, res) => {
 ////////////////////////// resource Reading //////////////////////////
 ////////////////////////// fetch all //////////////////////////
 
-router.get('/tasks',(req,res)=>{
+router.get('/tasks',auth,(req,res)=>{
 
     try{
-        const tasks = await Task.find({})
-        res.status(201).send(tasks)
+        //const tasks = await Task.find({ owner: req.user._id })
+        await req.user.populate('tasks').execPopulate()
+        res.status(201).send(req.user.tasks)
     }catch(e){
         res.status(500).send(error)
     }
@@ -44,11 +52,12 @@ router.get('/tasks',(req,res)=>{
 
 ////////////////////////// fetch by id //////////////////////////
 
-router.get('/tasks/:id',(req,res)=>{
+router.get('/tasks/:id',auth,(req,res)=>{
     const _id = req.params.id
 
     try{
-        const task = await Task.findById(_id)
+        //const task = await Task.findById(_id)
+        const task = await Task.findOne({ _id, owner: req.user._id })
              if(!task) {
                     return res.status(400).send()
                 }
@@ -71,7 +80,7 @@ router.get('/tasks/:id',(req,res)=>{
 
 ////////////////////////// resource Update //////////////////////////
 
-router.patch('/tasks/:id', async (req,res)=>{
+router.patch('/tasks/:id',auth, async (req,res)=>{
 
     //get requested columns need to be updated
     const updates = Object.keys(req.body)
@@ -87,16 +96,18 @@ router.patch('/tasks/:id', async (req,res)=>{
     }
 
     try{
-        const task = await Task.findById(req.params.id)
-        updates.forEach((update)=>{
-            task[update] = req.body[update]
-        })
-        await task.save()
+        const task = await Task.findOne({_id: req.params.id, owner: req.user._id})
+        //const task = await Task.findById(req.params.id)
         //const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true } )
         if(!task) {
             return res.status(404).send()
         }
 
+        updates.forEach((update)=>{
+            task[update] = req.body[update]
+        })
+        await task.save()
+        
         res.send(task)
     }catch(e){
         res.status(400).send(e)
@@ -106,9 +117,10 @@ router.patch('/tasks/:id', async (req,res)=>{
 
 ////////////////////////// resource delete //////////////////////////
 
-router.delete('/tasks/:id', async(req,res)=>{
+router.delete('/tasks/:id',auth, async(req,res)=>{
     try{
-        const task = await Task.findByIdAndDelete(req.params.id)
+        //const task = await Task.findByIdAndDelete(req.params.id)
+        const task = await Task.findByIdAndDelete({_id: req.params.id,owner:req.user._id})
         if(!task){
             return res.status(400).send()
         }
