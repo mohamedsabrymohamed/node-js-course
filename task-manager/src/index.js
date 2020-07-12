@@ -105,6 +105,23 @@ app.get('/tasks/:id',(req,res)=>{
 //     console.log(e)
 // })
 
+
+////////////////////////// change promise chaining to async and await //////////////////////////
+
+// const updateAgeAndCount = async (id, age)=>{
+//     const user = await User.findByIdAndUpdate(id,{age:age})
+//     const count = await User.countDocuments({age:age})
+//     return count
+// }
+
+// updateAgeAndCount('5465464546546',2).then((count)=> {
+//     console.log(count)
+// }).catch((e)=> {
+//     console.log(e)
+// })
+
+
+
 ////////////////////////// Express Listen Port //////////////////////////
 app.listen(port, () => {
     console.log('serve is up on  port ' + port)
