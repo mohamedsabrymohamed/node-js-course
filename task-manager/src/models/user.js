@@ -1,10 +1,4 @@
-/////////////////////////////////connection/////////////////////////////////
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
 /////////////////////////////////validator/////////////////////////////////
 const validator = require('validator')
 
@@ -48,16 +42,20 @@ const User = mongoose.model('User', {
     }
 });
 
-const store = User({
-    name: 'Sabry',
-    age: 32
-});
+// const store = User({
+//     name: 'Sabry',
+//     age: 32
+// });
 
-store
-    .save()
-    .then(store => {
-        console.log(store);
-    })
-    .catch(error => {
-        console.log(error);
-    });
+// store
+//     .save()
+//     .then(store => {
+//         console.log(store);
+//     })
+//     .catch(error => {
+//         console.log(error);
+//     });
+
+
+
+    module.exports= User
