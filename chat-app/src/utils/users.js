@@ -3,8 +3,8 @@ const users =[]
 //////////////////////////////////////////////////add new users//////////////////////////////////////////////////
 const addUser = ({ id, username, room })=>{
     //clean the data
-    username = username.trim().toLowerCase()
-    room = room.trim().toLowerCase()
+     username = username.trim().toLowerCase()
+     room = room.trim().toLowerCase()
     //validate data
     if(!username || !room){
         return {
@@ -26,8 +26,8 @@ const addUser = ({ id, username, room })=>{
 
     //store user
     const user = {id, username, room}
-    user.push(user)
-    return user
+    users.push(user)
+    return {user}
 
 
 }
@@ -37,7 +37,7 @@ const removeUser = (id)=>{
         return user.id === id
     })
 
-    if(index != -1){
+    if(index !== -1){
         return users.splice(index, 1)[0]
     }
 }
@@ -47,8 +47,8 @@ const getUser = (id) =>{
 }
 //////////////////////////////////////////////////get users in room//////////////////////////////////////////////////
 const getUsersInRoom = (room) =>{
+    room = room.trim().toLowerCase()
     return users.filter((user)=> {
-        room = room.trim().toLowerCase()
         user.room === room
     })
 }
