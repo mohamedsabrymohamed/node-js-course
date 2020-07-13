@@ -26,8 +26,9 @@ io.on('connection',(socket)=>{
         //io.emit('countUpdated',count)
    
 
-   socket.on('sendMessage',(message)=>{
+   socket.on('sendMessage',(message, callback)=>{
     io.emit('message',message)
+    callback()
    })
 
    //send message when user disconnect chat
