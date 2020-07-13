@@ -1,16 +1,37 @@
 const socket = io()
 
+//form elements
+const $messageForm = document.querySelector('#message-form')
+const $messageFormInbut = $messageForm.querySelector('input')
+const $messageFormButton = $messageForm.querySelector('button')
+const $sendLocation = document.querySelector('#send-location')
+//messages
+const $messages = document.querySelector('#messages')
+//templates
+const messageTemplate = document.querySelector('#message-template').innerHTML
+
+
 socket.on('message',(message)=>{
-    console.log(message)
+    const html = Mustache.render(messageTemplate,{
+        message: message
+    })
+    $messages.insertAdjacentHTML('beforeend',html)
 })
 
 
-document.querySelector('#message-form').addEventListener('submit',(e)=>{
+$messageForm.addEventListener('submit',(e)=>{
     e.preventDefault()
+    //disable submit form when message is sending
+    $messageFormButton.setAttribute('disabled','disabled')
 
     const message = e.target.elements.message.value
 
     socket.emit('sendMessage', message,(error)=>{
+        //enable submit message to be sent 
+        $messageFormButton.removeAttribute('disabled')
+        $messageFormInbut.value = ''
+        $messageFormInbut.focus()
+
         if(error){
             return console.log(error)
         }
@@ -20,16 +41,22 @@ document.querySelector('#message-form').addEventListener('submit',(e)=>{
 
 
 
-document.querySelector('#send-location').addEventListener('click',()=>{
+$sendLocation.addEventListener('click',()=>{
     if(! navigator.geolocation) {
         return alert('Geolocation is not supported by your browser')
     }
+
+
+    //disable send location button while sending location
+    $sendLocation.setAttribute('disabled','disabled')
 
     navigator.geolocation.getCurrentPosition((position)=>{
         socket.emit('sendLocation',{
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         },()=>{
+            //enable location button back
+            $sendLocation.removeAttribute('disabled')
             console.log('location shared')
         })
     })
