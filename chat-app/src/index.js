@@ -12,10 +12,28 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 
 app.use(express.static(publicDirectoryPath))
 
+let count = 0
 
 // listen for event on socket io
-io.on('connection',()=>{
-    console.log('New socket')
+io.on('connection',(socket)=>{
+    socket.emit('message','Welcome')
+    //send message to everyone except sender
+    socket.broadcast.emit('message', 'new user joiend')
+
+        //emit update to single connection
+        //socket.emit('countUpdated',count)
+        //emit update to all connections
+        //io.emit('countUpdated',count)
+   
+
+   socket.on('sendMessage',(message)=>{
+    io.emit('message',message)
+   })
+
+   //send message when user disconnect chat
+   socket.on('disconnect',()=>{
+       io.emit('message','user has left')
+   })
 })
 
 server.listen(port, ()=>{
