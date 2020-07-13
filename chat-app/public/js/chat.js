@@ -10,10 +10,15 @@ const $messages = document.querySelector('#messages')
 //templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
+//options using qs lib in chat.html to query strings
+const {username , room} = Qs.parse(location.search, { ignoreQueryPrefix: true})
+
+
 
 //listen for messages
 socket.on('message',(message)=>{
     const html = Mustache.render(messageTemplate,{
+        username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('h:mm a')
     })
@@ -23,6 +28,7 @@ socket.on('message',(message)=>{
 //listen for location message
 socket.on('locationMessage',(url)=>{
     const html = Mustache.render(locationMessageTemplate,{
+        username: message.username,
         url: url.text,
         createdAt: moment(url.createdAt).format('h:mm a')
     })
@@ -73,3 +79,7 @@ $sendLocation.addEventListener('click',()=>{
         })
     })
 })
+
+
+//emit username and room join
+socket.emit('join', {username, room})

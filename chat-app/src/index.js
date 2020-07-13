@@ -17,16 +17,26 @@ app.use(express.static(publicDirectoryPath))
 
 // listen for event on socket io
 io.on('connection',(socket)=>{
-    socket.emit('message',generateMessage('Welcome'))
-    //send message to everyone except sender
-    socket.broadcast.emit('message', generateMessage('new user joiend'))
+  
 
         //emit update to single connection
         //socket.emit('countUpdated',count)
         //emit update to all connections
         //io.emit('countUpdated',count)
    
+  //listen for join
+  socket.on('join',({ username, room}) =>{
+    //join room
+    socket.join(room)
+    //send greeting message
+    socket.emit('message',generateMessage(`Welcome`))
+    //send message to everyone except current user
+    //socket.broadcast.emit('message', generateMessage('new user joiend'))            
+    //send message to everyone except current user in specific room
+    socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined the room`))            
+})
 
+//send message listener
    socket.on('sendMessage',(message, callback)=>{
        const filter = new Filter()
        if(filter.isProfane(message)){
@@ -45,7 +55,9 @@ io.on('connection',(socket)=>{
    socket.on('sendLocation',(coords,callback)=>{
     io.emit('locationMessage', generateLocationMessage(`https://google.com/maps?q=${coords.latitude},${coords.longitude}`))
     callback()
-})
+    })
+
+          
 })
 
 server.listen(port, ()=>{
