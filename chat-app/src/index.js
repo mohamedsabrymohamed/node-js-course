@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+const { generateMessage } = require('./utils/messages')
 
 const app = express()
 const server = http.createServer(app)
@@ -13,13 +14,12 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 
 app.use(express.static(publicDirectoryPath))
 
-let count = 0
 
 // listen for event on socket io
 io.on('connection',(socket)=>{
-    socket.emit('message','Welcome')
+    socket.emit('message',generateMessage('Welcome'))
     //send message to everyone except sender
-    socket.broadcast.emit('message', 'new user joiend')
+    socket.broadcast.emit('message', generateMessage('new user joiend'))
 
         //emit update to single connection
         //socket.emit('countUpdated',count)
@@ -32,13 +32,13 @@ io.on('connection',(socket)=>{
        if(filter.isProfane(message)){
            return callback('Profanity is not allowed')
        }
-        io.emit('message',message)
+        io.emit('message',generateMessage(message))
         callback()
    })
 
    //send message when user disconnect chat
    socket.on('disconnect',()=>{
-       io.emit('message','user has left')
+       io.emit('message',generateMessage('user has left'))
    })
 
    //listen for send location
