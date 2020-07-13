@@ -19,7 +19,7 @@ app.use(express.static(publicDirectoryPath))
 // listen for event on socket io
 io.on('connection',(socket)=>{
   
-
+    console.log('New WebSocket connection')
         //emit update to single connection
         //socket.emit('countUpdated',count)
         //emit update to all connections
