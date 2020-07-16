@@ -5,3 +5,4 @@ task-manager/node_modules/
 task-manager/config/
 mysql_test/node_modules/
 chat-app/node_modules/
+url_shorten/node_modules/
